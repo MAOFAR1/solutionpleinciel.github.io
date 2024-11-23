@@ -1,0 +1,2883 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Solution d'Imprimantes & Cartouches Plein Ciel</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Styles généraux */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f4f4f4;
+            color: #333;
+            padding: 20px;
+        }
+
+        header {
+            background-color: #2c3e50;
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        /* Menu de navigation */
+        nav ul {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            background-color: #2c3e50;
+            margin-top: 20px;
+        }
+
+        nav ul li {
+            margin-right: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-size: 1.2em;
+            padding: 10px 20px;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        nav ul li a:hover {
+            background-color: #34495e;
+            border-radius: 5px;
+        }
+
+        /* Section principale */
+        main {
+            margin-top: 40px;
+        }
+
+        .section-title {
+            font-size: 2em;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        /* Tableau pour lister les imprimantes et leurs cartouches */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            padding: 20px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        /* Barre de recherche */
+        #searchBar {
+            width: 100%;
+            padding: 15px;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+
+        /* Filtres par marque */
+        #filters button {
+            padding: 10px 20px;
+            margin-right: 10px;
+            margin-bottom: 20px;
+            background-color: #2c3e50;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.3s ease, transform 0.2s;
+        }
+
+        #filters button:hover {
+            background-color: #34495e;
+            transform: translateY(-2px);
+        }
+
+        /* Section Contact avec informations */
+        .contact-info {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .contact-info h3 {
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            color: #2c3e50;
+        }
+
+        .contact-info p {
+            font-size: 1.1em;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        /* Styles pour les icônes de favoris */
+        .favorite-icon {
+            cursor: pointer;
+            font-size: 1.5em;
+            color: #ccc; /* Couleur par défaut de l'étoile */
+            transition: color 0.3s ease;
+        }
+
+        .favorite-icon.active {
+            color: gold; /* Couleur dorée pour les favoris actifs */
+        }
+
+        /* Section des favoris */
+        #favorites-section {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- En-tête de la page -->
+    <header>
+        <h1>Plein Ciel Cartouche d'imprimante</h1>
+        <nav>
+            <ul>
+                <li><a href="#imprimantes">Nos Imprimantes</a></li>
+                <li><a href="#contact">Informations de Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Filtres et barre de recherche -->
+    <main>
+        <section id="imprimantes">
+            <h2 class="section-title">Les Cartouches</h2>
+            
+            <!-- Barre de recherche -->
+            <input type="text" id="searchBar" placeholder="Rechercher une imprimante ou une cartouche...">
+            
+            <!-- Filtres par marque -->
+            <div id="filters">
+                <button onclick="filterByBrand('all')">Tous</button>
+                <button onclick="filterByBrand('hp')">HP</button>
+                <button onclick="filterByBrand('canon')">Canon</button>
+                <button onclick="filterByBrand('brother')">Brother</button>
+                <button onclick="filterByBrand('epson')">Epson</button>
+            </div>
+
+            <!-- Tableau des imprimantes et cartouches -->
+            <table id="imprimanteTable">
+                <thead>
+                    <tr>
+                        <th>Marque de l'imprimante</th>
+                        <th>Modèle</th>
+                        <th>Référence de la cartouche</th>
+                        <th>Favori</th> <!-- Colonne Favori -->
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Imprimantes avec références de cartouches -->
+                     <tr>
+    <td>Canon</td>
+    <td>CANON Pixma TS8200 Series</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS8240</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma TS8241</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma TS8242</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS8250</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS8251</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS8252</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS8300 Series</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS8350</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS8350 Series</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS8351</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS8352</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma TS9100 Series</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS9150</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS9155</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS9500 Series</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS9540</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS9541 C</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma TS9550</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma TS9551 C</td>
+    <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2455</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2500 Series</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2540</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2540 s</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2550</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2550 s</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2555</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2555 S</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2900 Series</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2940</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2950</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG2950 S</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG3000 Series</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG3050</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>CANON Pixma MG3050 Series</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma MG3051</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma MG3052</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+<tr>
+    <td>Canon</td>
+    <td>Canon Pixma MG3053</td>
+    <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+</tr>
+
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TR4500 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TR4540</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TR4541</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TR4550</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TR4551</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TR4750i</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TR4751i</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TR7500 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TR7520</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TR7550</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TR8500 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TR8520</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma MG2450</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS205</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS304</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS305</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS3100 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS3150</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS3151</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS3152</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS3300 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS3350</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS3350 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS3351</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS3352</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS3500 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS3550i</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS3551i</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS6100 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS6150</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS6151</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS6200 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS6240</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS6241</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS6250</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS6251</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS6300 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS6350</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS6350 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS6351</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS6352</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Pixma TS705</td>
+                        <td data-label="Référence de la cartouche">Canon PG-640 / CL-641</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS8100 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS8150</td>
+                        <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS8151</td>
+                        <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma TS8152</td>
+                        <td data-label="Référence de la cartouche">Canon PG-810 / CL-811</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon C120 F</td>
+                        <td data-label="Référence de la cartouche">Canon EP-87</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon C122</td>
+                        <td data-label="Référence de la cartouche">Canon EP-87</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon C122 F</td>
+                        <td data-label="Référence de la cartouche">Canon EP-87</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon C130</td>
+                        <td data-label="Référence de la cartouche">Canon EP-88</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon C130 F</td>
+                        <td data-label="Référence de la cartouche">Canon EP-88</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon CLC 4040</td>
+                        <td data-label="Référence de la cartouche">Canon C-EXV 23</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon CLC 4141</td>
+                        <td data-label="Référence de la cartouche">Canon C-EXV 26</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon CLC 5151</td>
+                        <td data-label="Référence de la cartouche">Canon C-EXV 28</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon CPF NP6012</td>
+                        <td data-label="Référence de la cartouche">Canon NP-6030</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon CPF NP6012 F</td>
+                        <td data-label="Référence de la cartouche">Canon NP-6030</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon CPF NP6112</td>
+                        <td data-label="Référence de la cartouche">Canon NP-6120</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon CPF NP6212</td>
+                        <td data-label="Référence de la cartouche">Canon NP-6200</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon CPF NP6512</td>
+                        <td data-label="Référence de la cartouche">Canon NP-6530</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon CPF NP6612</td>
+                        <td data-label="Référence de la cartouche">Canon NP-6600</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Fax L-150</td>
+                        <td data-label="Référence de la cartouche">Canon FX-3</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Fax L-170</td>
+                        <td data-label="Référence de la cartouche">Canon FX-4</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON i-SENSYS Fax L-150</td>
+                        <td data-label="Référence de la cartouche">Canon FX-3</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON i-SENSYS Fax L-170</td>
+                        <td data-label="Référence de la cartouche">Canon FX-4</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Fax L-150</td>
+                        <td data-label="Référence de la cartouche">Canon FX-3</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Fax L-170</td>
+                        <td data-label="Référence de la cartouche">Canon FX-4</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Maxify iB4000 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Maxify iB4050</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon Maxify iB4150</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Maxify MB5000 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Maxify MB5050</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Maxify MB5100 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Maxify MB5150</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Maxify MB5155</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Maxify MB5300 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Maxify MB5350</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Maxify MB5400 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Maxify MB5450</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Maxify MB5455</td>
+                        <td data-label="Référence de la cartouche">Canon PGI-1500 / CLI-1510</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON i-SENSYS Fax L-150</td>
+                        <td data-label="Référence de la cartouche">Canon FX-3</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma IP2800 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-40 / CL-41</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma IP2850</td>
+                        <td data-label="Référence de la cartouche">Canon PG-40 / CL-41</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON i-SENSYS Fax L-170</td>
+                        <td data-label="Référence de la cartouche">Canon FX-4</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma MG2400 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-40 / CL-41</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma MG2440</td>
+                        <td data-label="Référence de la cartouche">Canon PG-40 / CL-41</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma MX490 Series</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma MX494</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>CANON Pixma MX495</td>
+                        <td data-label="Référence de la cartouche">Canon PG-245 / CL-246</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP MFP M128fw</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M130fw</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M130a</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M134fnw</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M134a</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M148fdw</td>
+                        <td data-label="Référence de la cartouche">HP 26A (Noir), HP 26X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M148fdn</td>
+                        <td data-label="Référence de la cartouche">HP 26A (Noir), HP 26X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M148nw</td>
+                        <td data-label="Référence de la cartouche">HP 26A (Noir), HP 26X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M404dn</td>
+                        <td data-label="Référence de la cartouche">HP 58A (Noir), HP 58X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M404dw</td>
+                        <td data-label="Référence de la cartouche">HP 58A (Noir), HP 58X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M404n</td>
+                        <td data-label="Référence de la cartouche">HP 58A (Noir), HP 58X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M428fdw</td>
+                        <td data-label="Référence de la cartouche">HP 58A (Noir), HP 58X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M428dw</td>
+                        <td data-label="Référence de la cartouche">HP 58A (Noir), HP 58X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M428dn</td>
+                        <td data-label="Référence de la cartouche">HP 58A (Noir), HP 58X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M429fdw</td>
+                        <td data-label="Référence de la cartouche">HP 58A (Noir), HP 58X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M429dw</td>
+                        <td data-label="Référence de la cartouche">HP 58A (Noir), HP 58X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M429n</td>
+                        <td data-label="Référence de la cartouche">HP 58A (Noir), HP 58X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M402dne</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M402dn</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M402dw</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M402n</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M104w</td>
+                        <td data-label="Référence de la cartouche">HP 79A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M104a</td>
+                        <td data-label="Référence de la cartouche">HP 79A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M105w</td>
+                        <td data-label="Référence de la cartouche">HP 79A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M105a</td>
+                        <td data-label="Référence de la cartouche">HP 79A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M108w</td>
+                        <td data-label="Référence de la cartouche">HP 108A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M108a</td>
+                        <td data-label="Référence de la cartouche">HP 108A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M110w</td>
+                        <td data-label="Référence de la cartouche">HP 106A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M110a</td>
+                        <td data-label="Référence de la cartouche">HP 106A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M102a</td>
+                        <td data-label="Référence de la cartouche">HP 79A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M102w</td>
+                        <td data-label="Référence de la cartouche">HP 79A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M102dw</td>
+                        <td data-label="Référence de la cartouche">HP 79A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M101w</td>
+                        <td data-label="Référence de la cartouche">HP 79A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M101a</td>
+                        <td data-label="Référence de la cartouche">HP 79A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M255dw</td>
+                        <td data-label="Référence de la cartouche">HP 212A (Cyan, Magenta, Yellow), HP 212X (Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro M255n</td>
+                        <td data-label="Référence de la cartouche">HP 212A (Cyan, Magenta, Yellow), HP 212X (Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M282dw</td>
+                        <td data-label="Référence de la cartouche">HP 212A (Cyan, Magenta, Yellow), HP 212X (Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M283fdw</td>
+                        <td data-label="Référence de la cartouche">HP 212A (Cyan, Magenta, Yellow), HP 212X (Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 3830</td>
+                        <td data-label="Référence de la cartouche">HP 302 (Noir, Cyan, Magenta, Yellow), HP 302XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 4650</td>
+                        <td data-label="Référence de la cartouche">HP 302 (Noir, Cyan, Magenta, Yellow), HP 302XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 5255</td>
+                        <td data-label="Référence de la cartouche">HP 302 (Noir, Cyan, Magenta, Yellow), HP 302XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 5740</td>
+                        <td data-label="Référence de la cartouche">HP 62 (Noir, Cyan, Magenta, Yellow), HP 62XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 6950</td>
+                        <td data-label="Référence de la cartouche">HP 902 (Noir, Cyan, Magenta, Yellow), HP 902XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 6700 Premium</td>
+                        <td data-label="Référence de la cartouche">HP 932 (Noir), HP 933 (Cyan, Magenta, Yellow), HP 932XL (Noir), HP 933XL (Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet Pro 8600</td>
+                        <td data-label="Référence de la cartouche">HP 950 (Noir, Cyan, Magenta, Yellow), HP 950XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet Pro 8210</td>
+                        <td data-label="Référence de la cartouche">HP 952 (Noir, Cyan, Magenta, Yellow), HP 952XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet Pro 8740</td>
+                        <td data-label="Référence de la cartouche">HP 952 (Noir, Cyan, Magenta, Yellow), HP 952XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 1110</td>
+                        <td data-label="Référence de la cartouche">HP 302 (Noir, Cyan, Magenta, Yellow), HP 302XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 2130</td>
+                        <td data-label="Référence de la cartouche">HP 302 (Noir, Cyan, Magenta, Yellow), HP 302XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 2620</td>
+                        <td data-label="Référence de la cartouche">HP 302 (Noir, Cyan, Magenta, Yellow), HP 302XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 3630</td>
+                        <td data-label="Référence de la cartouche">HP 302 (Noir, Cyan, Magenta, Yellow), HP 302XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 4150</td>
+                        <td data-label="Référence de la cartouche">HP 305 (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 3700</td>
+                        <td data-label="Référence de la cartouche">HP 302 (Noir, Cyan, Magenta, Yellow), HP 302XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP ENVY 4500</td>
+                        <td data-label="Référence de la cartouche">HP 301 (Noir, Cyan, Magenta, Yellow), HP 301XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP ENVY 5530</td>
+                        <td data-label="Référence de la cartouche">HP 301 (Noir, Cyan, Magenta, Yellow), HP 301XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP ENVY 5534</td>
+                        <td data-label="Référence de la cartouche">HP 301 (Noir, Cyan, Magenta, Yellow), HP 301XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP ENVY 4500 Series</td>
+                        <td data-label="Référence de la cartouche">HP 301 (Noir, Cyan, Magenta, Yellow), HP 301XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP ENVY 5540</td>
+                        <td data-label="Référence de la cartouche">HP 301 (Noir, Cyan, Magenta, Yellow), HP 301XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP ENVY 5640</td>
+                        <td data-label="Référence de la cartouche">HP 62 (Noir, Cyan, Magenta, Yellow), HP 62XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP ENVY 5660</td>
+                        <td data-label="Référence de la cartouche">HP 62 (Noir, Cyan, Magenta, Yellow), HP 62XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP ENVY 7640</td>
+                        <td data-label="Référence de la cartouche">HP 62 (Noir, Cyan, Magenta, Yellow), HP 62XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP ENVY 7645</td>
+                        <td data-label="Référence de la cartouche">HP 62 (Noir, Cyan, Magenta, Yellow), HP 62XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 2650</td>
+                        <td data-label="Référence de la cartouche">HP 302 (Noir, Cyan, Magenta, Yellow), HP 302XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 3750</td>
+                        <td data-label="Référence de la cartouche">HP 302 (Noir, Cyan, Magenta, Yellow), HP 302XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 5030</td>
+                        <td data-label="Référence de la cartouche">HP 305 (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 6120</td>
+                        <td data-label="Référence de la cartouche">HP 56 (Noir), HP 57 (Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 6540</td>
+                        <td data-label="Référence de la cartouche">HP 56 (Noir), HP 57 (Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 6840</td>
+                        <td data-label="Référence de la cartouche">HP 88 (Noir, Cyan, Magenta, Yellow), HP 88XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP Photosmart 5510</td>
+                        <td data-label="Référence de la cartouche">HP 364 (Noir, Cyan, Magenta, Yellow), HP 364XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP Photosmart 6520</td>
+                        <td data-label="Référence de la cartouche">HP 364 (Noir, Cyan, Magenta, Yellow), HP 364XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP Photosmart 7520</td>
+                        <td data-label="Référence de la cartouche">HP 364 (Noir, Cyan, Magenta, Yellow), HP 364XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP Photosmart 5520</td>
+                        <td data-label="Référence de la cartouche">HP 364 (Noir, Cyan, Magenta, Yellow), HP 364XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP Photosmart 7510</td>
+                        <td data-label="Référence de la cartouche">HP 364 (Noir, Cyan, Magenta, Yellow), HP 364XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 4630</td>
+                        <td data-label="Référence de la cartouche">HP 61 (Noir, Cyan, Magenta, Yellow), HP 61XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 4650</td>
+                        <td data-label="Référence de la cartouche">HP 61 (Noir, Cyan, Magenta, Yellow), HP 61XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 5255</td>
+                        <td data-label="Référence de la cartouche">HP 63 (Noir, Cyan, Magenta, Yellow), HP 63XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 5258</td>
+                        <td data-label="Référence de la cartouche">HP 63 (Noir, Cyan, Magenta, Yellow), HP 63XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 5740</td>
+                        <td data-label="Référence de la cartouche">HP 62 (Noir, Cyan, Magenta, Yellow), HP 62XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 6810</td>
+                        <td data-label="Référence de la cartouche">HP 950 (Noir, Cyan, Magenta, Yellow), HP 950XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 6812</td>
+                        <td data-label="Référence de la cartouche">HP 950 (Noir, Cyan, Magenta, Yellow), HP 950XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 3830</td>
+                        <td data-label="Référence de la cartouche">HP 63 (Noir, Cyan, Magenta, Yellow), HP 63XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 3832</td>
+                        <td data-label="Référence de la cartouche">HP 63 (Noir, Cyan, Magenta, Yellow), HP 63XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M225dn</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M227fdw</td>
+                        <td data-label="Référence de la cartouche">HP 26A (Noir), HP 26X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M130fw</td>
+                        <td data-label="Référence de la cartouche">HP 17A (Noir), HP 17X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M130nw</td>
+                        <td data-label="Référence de la cartouche">HP 17A (Noir), HP 17X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M125nw</td>
+                        <td data-label="Référence de la cartouche">HP 83A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro 400 MFP M425dn</td>
+                        <td data-label="Référence de la cartouche">HP 80A (Noir), HP 80X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro 200 color MFP M276nw</td>
+                        <td data-label="Référence de la cartouche">HP 131A (Cyan, Magenta, Yellow), HP 131X (Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro 500 color MFP M570dn</td>
+                        <td data-label="Référence de la cartouche">HP 507A (Cyan, Magenta, Yellow), HP 507X (Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M148fdw</td>
+                        <td data-label="Référence de la cartouche">HP 48A (Noir), HP 48X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M148nw</td>
+                        <td data-label="Référence de la cartouche">HP 48A (Noir), HP 48X (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro MFP M156nw</td>
+                        <td data-label="Référence de la cartouche">HP 79A (Noir)</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA iP7250</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA MG2550S</td>
+                        <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA MG2950</td>
+                        <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA MG3650</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA MG4250</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA MG5450</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA MX495</td>
+                        <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA MX525</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA MX535</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA TS5050</td>
+                        <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA TS5051</td>
+                        <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA TS6050</td>
+                        <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA TS8050</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA TS8051</td>
+                        <td data-label="Référence de la cartouche">Canon PG-540 / CL-541</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA TR7550</td>
+                        <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA TR8550</td>
+                        <td data-label="Référence de la cartouche">Canon PG-545 / CL-546</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA G3500</td>
+                        <td data-label="Référence de la cartouche">Canon GI-490 (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA G6000</td>
+                        <td data-label="Référence de la cartouche">Canon GI-490 (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA G6100</td>
+                        <td data-label="Référence de la cartouche">Canon GI-490 (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA G6200</td>
+                        <td data-label="Référence de la cartouche">Canon GI-490 (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>HP</td>
+                        <td>HP LaserJet Pro 300 color MFP M375nw</td>
+                        <td data-label="Référence de la cartouche">HP 131A (Cyan, Magenta, Yellow), HP 131X (Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>HP</td>
+                        <td>HP Photosmart 2575</td>
+                        <td data-label="Référence de la cartouche">HP 57 (Cyan, Magenta, Yellow), HP 58 (Photo Noir)</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 8100</td>
+                        <td data-label="Référence de la cartouche">HP 950 (Noir, Cyan, Magenta, Yellow), HP 950XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 8600 Pro</td>
+                        <td data-label="Référence de la cartouche">HP 950 (Noir, Cyan, Magenta, Yellow), HP 950XL (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP OfficeJet 6500</td>
+                        <td data-label="Référence de la cartouche">HP 901 (Noir, Cyan, Magenta, Yellow)</td>
+                    </tr>
+                    
+                    <tr>
+                        <td>HP</td>
+                        <td>HP DeskJet 2710</td>
+                        <td data-label="Référence de la cartouche">HP 305</td>
+                        <td><span class="favorite-icon" onclick="toggleFavorite(this, 'HP 305')">☆</span></td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP ENVY 4100</td>
+                        <td data-label="Référence de la cartouche">HP 305</td>
+                        <td><span class="favorite-icon" onclick="toggleFavorite(this, 'HP 305')">☆</span></td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP Envy 6000</td>
+                        <td data-label="Référence de la cartouche">HP 305</td>
+                        <td><span class="favorite-icon" onclick="toggleFavorite(this, 'HP 305')">☆</span></td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP Envy 6400</td>
+                        <td data-label="Référence de la cartouche">HP 305</td>
+                        <td><span class="favorite-icon" onclick="toggleFavorite(this, 'HP 305')">☆</span></td>
+                    </tr>
+                    <tr>
+                        <td>HP</td>
+                        <td>HP Envy photo 7800</td>
+                        <td data-label="Référence de la cartouche">HP 17A (CF217A)</td>
+                        <td><span class="favorite-icon" onclick="toggleFavorite(this, 'HP 17A (CF217A)')">☆</span></td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA G3410</td>
+                        <td data-label="Référence de la cartouche">GI-490BK</td>
+                        <td><span class="favorite-icon" onclick="toggleFavorite(this, 'GI-490BK')">☆</span></td>
+                    </tr>
+                    <tr>
+                        <td>Canon</td>
+                        <td>Canon PIXMA G6040</td>
+                        <td data-label="Référence de la cartouche">GI-490BK</td>
+                        <td><span class="favorite-icon" onclick="toggleFavorite(this, 'GI-490BK')">☆</span></td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1000</td>
+                        <td data-label="Référence de la cartouche">TN-1000</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1200</td>
+                        <td data-label="Référence de la cartouche">TN-2000</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1400</td>
+                        <td data-label="Référence de la cartouche">TN-1000</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1510</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1510 E</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1512</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1512 A</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1512 E</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1512 Series</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1600 Series</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1601</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1610 W</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1610 WE</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1612 W</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1612 WVB</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1616 NW</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7010</td>
+                        <td data-label="Référence de la cartouche">TN-2010</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7010 L</td>
+                        <td data-label="Référence de la cartouche">TN-2010</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7020</td>
+                        <td data-label="Référence de la cartouche">TN-2000</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7025</td>
+                        <td data-label="Référence de la cartouche">TN-2000</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7030</td>
+                        <td data-label="Référence de la cartouche">TN-2000</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7032</td>
+                        <td data-label="Référence de la cartouche">TN-2000</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7040</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7045 N</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7055</td>
+                        <td data-label="Référence de la cartouche">TN-2010</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7055 W</td>
+                        <td data-label="Référence de la cartouche">TN-2010</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7057</td>
+                        <td data-label="Référence de la cartouche">TN-2010</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7060 D</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7060 N</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7065 DN</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7070 DW</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8020</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8025 D</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8025 DN</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8040</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8040 LT</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8045 D</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8045 DN</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8060</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8060 DN</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1110</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1110 E</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1210 W</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1210</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1210 WE</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1212</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1212 W</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1217</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1320</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1350</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1350 D</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1370</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1380</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1430</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1440</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1450</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1470</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1480</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-1490</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-2070</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-2130</td>
+                        <td data-label="Référence de la cartouche">TN-2010</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-2150</td>
+                        <td data-label="Référence de la cartouche">TN-2010</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-2270</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-2270DW</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-2280DW</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-2320D</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-2360DW</td>
+                        <td data-label="Référence de la cartouche">TN-2020</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-2380DW</td>
+                        <td data-label="Référence de la cartouche">TN-2010</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-2700DW</td>
+                        <td data-label="Référence de la cartouche">TN-2410</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-3000</td>
+                        <td data-label="Référence de la cartouche">TN-2410</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-3150CDW</td>
+                        <td data-label="Référence de la cartouche">TN-2410</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-3170CDW</td>
+                        <td data-label="Référence de la cartouche">TN-2410</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-3180CDW</td>
+                        <td data-label="Référence de la cartouche">TN-2410</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-L5200DW</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-L6400DW</td>
+                        <td data-label="Référence de la cartouche">TN-880</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-L8360CDW</td>
+                        <td data-label="Référence de la cartouche">TN-423</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother HL-L9310CDW</td>
+                        <td data-label="Référence de la cartouche">TN-433</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1600 Series</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1610 W</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1610 WE</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1612 W</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1612 WVB</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-1616 NW</td>
+                        <td data-label="Référence de la cartouche">TN-1030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7010</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7010 L</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7020</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7025</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7030</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7032</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7040</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7045 N</td>
+                        <td data-label="Référence de la cartouche">TN-2030</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7055</td>
+                        <td data-label="Référence de la cartouche">TN-2330</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7055 W</td>
+                        <td data-label="Référence de la cartouche">TN-2330</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7057</td>
+                        <td data-label="Référence de la cartouche">TN-2330</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7060 D</td>
+                        <td data-label="Référence de la cartouche">TN-2330</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7060 N</td>
+                        <td data-label="Référence de la cartouche">TN-2330</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7065 DN</td>
+                        <td data-label="Référence de la cartouche">TN-2330</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-7070 DW</td>
+                        <td data-label="Référence de la cartouche">TN-2330</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8020</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8025 D</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8025 DN</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8040</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8040 LT</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8045 D</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8045 DN</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8060</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8060 DN</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8065 DN</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8070 D</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8080 DN</td>
+                        <td data-label="Référence de la cartouche">TN-850</td>
+                    </tr>
+                    <tr>
+                        <td>Brother</td>
+                        <td>Brother DCP-8085 DN</td>
+                        <td data-label="Référence deVoici la suite et la fin du code HTML pour les imprimantes et leurs références de cartouches :
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother DCP-8085 DN</td>
+                            <td data-label="Référence de la cartouche">TN-850</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-1600</td>
+                            <td data-label="Référence de la cartouche">TN-2010</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-1810</td>
+                            <td data-label="Référence de la cartouche">TN-1030</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-1815</td>
+                            <td data-label="Référence de la cartouche">TN-1030</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-1910</td>
+                            <td data-label="Référence de la cartouche">TN-1030</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-1910W</td>
+                            <td data-label="Référence de la cartouche">TN-1030</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-1930</td>
+                            <td data-label="Référence de la cartouche">TN-1030</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-1950</td>
+                            <td data-label="Référence de la cartouche">TN-1030</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-1980</td>
+                            <td data-label="Référence de la cartouche">TN-1030</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-2500</td>
+                            <td data-label="Référence de la cartouche">TN-2400</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-2600</td>
+                            <td data-label="Référence de la cartouche">TN-2400</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-2700</td>
+                            <td data-label="Référence de la cartouche">TN-2400</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-2800</td>
+                            <td data-label="Référence de la cartouche">TN-2400</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-2900</td>
+                            <td data-label="Référence de la cartouche">TN-2400</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-3000</td>
+                            <td data-label="Référence de la cartouche">TN-2500</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-3500</td>
+                            <td data-label="Référence de la cartouche">TN-2500</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-4000</td>
+                            <td data-label="Référence de la cartouche">TN-2500</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-4100</td>
+                            <td data-label="Référence de la cartouche">TN-2500</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-4200</td>
+                            <td data-label="Référence de la cartouche">TN-2500</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-5000</td>
+                            <td data-label="Référence de la cartouche">TN-5000</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-6000</td>
+                            <td data-label="Référence de la cartouche">TN-6000</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-7000</td>
+                            <td data-label="Référence de la cartouche">TN-7000</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-7500</td>
+                            <td data-label="Référence de la cartouche">TN-7500</td>
+                        </tr>
+                        <tr>
+                            <td>Brother</td>
+                            <td>Brother MFC-8000</td>
+                            <td data-label="Référence de la cartouche">TN-8000</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser C900</td>
+                            <td data-label="Référence de la cartouche">S050085 (Noir), S050086 (Cyan), S050087 (Magenta), S050088 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser C900 N</td>
+                            <td data-label="Référence de la cartouche">S050085 (Noir), S050086 (Cyan), S050087 (Magenta), S050088 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser C9300 D 3 TNC</td>
+                            <td data-label="Référence de la cartouche">T0440 (Noir), T0441 (Cyan), T0442 (Magenta), T0443 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser C9300 DN</td>
+                            <td data-label="Référence de la cartouche">T0440 (Noir), T0441 (Cyan), T0442 (Magenta), T0443 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser C9300 DTN</td>
+                            <td data-label="Référence de la cartouche">T0440 (Noir), T0441 (Cyan), T0442 (Magenta), T0443 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser C9300 Series</td>
+                            <td data-label="Référence de la cartouche">T0440 (Noir), T0441 (Cyan), T0442 (Magenta), T0443 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser CX16 DNF</td>
+                            <td data-label="Référence de la cartouche">S050350 (Noir), S050351 (Cyan), S050352 (Magenta), S050353 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser CX16 DTNF</td>
+                            <td data-label="Référence de la cartouche">S050350 (Noir), S050351 (Cyan), S050352 (Magenta), S050353 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M1200</td>
+                            <td data-label="Référence de la cartouche">S050493 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M1400</td>
+                            <td data-label="Référence de la cartouche">S050497 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2000</td>
+                            <td data-label="Référence de la cartouche">S050514 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2000 D</td>
+                            <td data-label="Référence de la cartouche">S050514 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2000 DN</td>
+                            <td data-label="Référence de la cartouche">S050514 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2000 DT</td>
+                            <td data-label="Référence de la cartouche">S050514 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2000 DTN</td>
+                            <td data-label="Référence de la cartouche">S050514 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2300</td>
+                            <td data-label="Référence de la cartouche">S050527 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2300 D</td>
+                            <td data-label="Référence de la cartouche">S050527 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2300 DN</td>
+                            <td data-label="Référence de la cartouche">S050527 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2300 DT</td>
+                            <td data-label="Référence de la cartouche">S050527 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2300 DTN</td>
+                            <td data-label="Référence de la cartouche">S050527 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2300 Series</td>
+                            <td data-label="Référence de la cartouche">S050527 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2400 D</td>
+                            <td data-label="Référence de la cartouche">S050531 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2400 DN</td>
+                            <td data-label="Référence de la cartouche">S050531 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2400 DT</td>
+                            <td data-label="Référence de la cartouche">S050531 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2400 DTN</td>
+                            <td data-label="Référence de la cartouche">S050531 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M2400 Series</td>
+                            <td data-label="Référence de la cartouche">S050531 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M4000</td>
+                            <td data-label="Référence de la cartouche">S050577 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M4000 DN</td>
+                            <td data-label="Référence de la cartouche">S050577 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M4000 DTN</td>
+                            <td data-label="Référence de la cartouche">S050577 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M4000 N</td>
+                            <td data-label="Référence de la cartouche">S050577 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M4000 Series</td>
+                            <td data-label="Référence de la cartouche">S050577 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser M4000 TN</td>
+                            <td data-label="Référence de la cartouche">S050577 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-5000</td>
+                            <td data-label="Référence de la cartouche">S050013 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-5200</td>
+                            <td data-label="Référence de la cartouche">S050015 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL6200</td>
+                            <td data-label="Référence de la cartouche">S050039 (Noir), S050040 (Cyan), S050041 (Magenta), S050042 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL6200 DTN</td>
+                            <td data-label="Référence de la cartouche">S050039 (Noir), S050040 (Cyan), S050041 (Magenta), S050042 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL6200 L</td>
+                            <td data-label="Référence de la cartouche">S050039 (Noir), S050040 (Cyan), S050041 (Magenta), S050042 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL6200 NEPSON Aculaser CX16 NF</td>
+                            <td data-label="Référence de la cartouche">S050350 (Noir), S050351 (Cyan), S050352 (Magenta), S050353 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-N2550</td>
+                            <td data-label="Référence de la cartouche">S050254 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-N2550 DT</td>
+                            <td data-label="Référence de la cartouche">S050254 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-N2550 T</td>
+                            <td data-label="Référence de la cartouche">S050254 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-N3000</td>
+                            <td data-label="Référence de la cartouche">S050315 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-N3000 D</td>
+                            <td data-label="Référence de la cartouche">S050315 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-N3000 DT</td>
+                            <td data-label="Référence de la cartouche">S050315 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-N3000 DTS</td>
+                            <td data-label="Référence de la cartouche">S050315 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-N3000 Series</td>
+                            <td data-label="Référence de la cartouche">S050315 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON EPL-N3000 TE</td>
+                            <td data-label="Référence de la cartouche">S050315 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser CX17</td>
+                            <td data-label="Référence de la cartouche">S050505 (Noir), S050506 (Cyan), S050507 (Magenta), S050508 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus D68</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus D68 PE</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus D88</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus D88 PE</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX3800</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX3800 Series</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX3850</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX3850 Plus</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX4200</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX4200 Series</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX4250</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX4800</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX4800 Series</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                                         
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX4850</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus DX4850 Plus</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office B42 WD</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office BX305 F</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office BX305 FW</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office BX305 FW Plus</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office BX320 FW</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office BX525 WD</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office BX535 WD</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office BX625 FWD</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office BX630 FW</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office BX635 FWD</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Stylus Office BX935 FW</td>
+                            <td data-label="Référence de la cartouche">T1631 (Noir), T1632 (Cyan), T1633 (Magenta), T1634 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser CX29 DNF</td>
+                            <td data-label="Référence de la cartouche">S050511 (Noir), S050512 (Cyan), S050513 (Magenta), S050514 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser CX29 NF</td>
+                            <td data-label="Référence de la cartouche">S050511 (Noir), S050512 (Cyan), S050513 (Magenta), S050514 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser CX37 DN</td>
+                            <td data-label="Référence de la cartouche">S050511 (Noir), S050512 (Cyan), S050513 (Magenta), S050514 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser CX37 DNF</td>
+                            <td data-label="Référence de la cartouche">S050511 (Noir), S050512 (Cyan), S050513 (Magenta), S050514 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser CX37 DTN</td>
+                            <td data-label="Référence de la cartouche">S050511 (Noir), S050512 (Cyan), S050513 (Magenta), S050514 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>EPSON Aculaser CX37 DTNF</td>
+                            <td data-label="Référence de la cartouche">S050511 (Noir), S050512 (Cyan), S050513 (Magenta), S050514 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-3800 Series</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-3820 DWF</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce AL-M200 DN</td>
+                            <td data-label="Référence de la cartouche">S050625 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce AL-M200 DW</td>
+                            <td data-label="Référence de la cartouche">S050625 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce AL-M200 Series</td>
+                            <td data-label="Référence de la cartouche">S050625 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce AL-MX200 D</td>
+                            <td data-label="Référence de la cartouche">S050626 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce AL-MX200 DN</td>
+                            <td data-label="Référence de la cartouche">S050626 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce AL-MX200 DNF</td>
+                            <td data-label="Référence de la cartouche">S050626 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce AL-MX200 DTN</td>
+                            <td data-label="Référence de la cartouche">S050626 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce AL-MX200 DW</td>
+                            <td data-label="Référence de la cartouche">S050626 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce AL-MX200 DWF</td>
+                            <td data-label="Référence de la cartouche">S050626 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce AL-MX200 Series</td>
+                            <td data-label="Référence de la cartouche">S050626 (Noir)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2800 Series</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2860 DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2865 DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce 525</td>
+                            <td data-label="Référence de la cartouche">T7741 (Noir), T7742 (Cyan), T7743 (Magenta), T7744 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce 630</td>
+                            <td data-label="Référence de la cartouche">T7741 (Noir), T7742 (Cyan), T7743 (Magenta), T7744 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce EC-C7000</td>
+                            <td data-label="Référence de la cartouche">T7741 (Noir), T7742 (Cyan), T7743 (Magenta), T7744 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2810 DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2820 DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2830 DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2835 DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2840 DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2845 DW</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2850 DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2870 DW</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2910DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2930DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2935DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2950DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2960DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-2965DWF</td>
+                            <td data-label="Référence de la cartouche">T7721 (Noir), T7722 (Cyan), T7723 (Magenta), T7724 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-7310 DTW</td>
+                            <td data-label="Référence de la cartouche">T824100 (Noir), T824200 (Cyan), T824300 (Magenta), T824400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce WF-7830 DTWf</td>
+                            <td data-label="Référence de la cartouche">T824100 (Noir), T824200 (Cyan), T824300 (Magenta), T824400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-3825 DWF</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-3830 DWTF</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-4800 Series</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-4820 DWF</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-4825 DWF</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-4830 DTWf</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-6000 Series</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-6090 D2TWC</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-6090 DTWC</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-6090 DW</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        <tr>
+                            <td>EPSON</td>
+                            <td>Epson WorkForce Pro WF-6090 Series</td>
+                            <td data-label="Référence de la cartouche">T800100 (Noir), T800200 (Cyan), T800300 (Magenta), T800400 (Jaune)</td>
+                        </tr>
+                        
+                    <tr>
+                        <td>Epson</td>
+                        <td>Epson EcoTank ET-2720</td>
+                        <td data-label="Référence de la cartouche">T2991</td>
+                        <td><span class="favorite-icon" onclick="toggleFavorite(this, 'T2991')">☆</span></td>
+                    </tr>
+                    <tr>
+                        <td>Epson</td>
+                        <td>Epson EcoTank ET-2760</td>
+                        <td data-label="Référence de la cartouche">T2991</td>
+                        <td><span class="favorite-icon" onclick="toggleFavorite(this, 'T2991')">☆</span></td>
+                    </tr>
+                    <tr>
+                        <td>Epson</td>
+                        <td>Epson WorkForce WF-7210</td>
+                        <td data-label="Référence de la cartouche">T158</td>
+                        <td><span class="favorite-icon" onclick="toggleFavorite(this, 'T158')">☆</span></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Section Contact avec informations -->
+        <section id="contact" class="contact-info">
+            <h3>Informations Contact</h3>
+            <p>Pour toute question, veuillez nous contacter au 05 61 59 20 78.</p>
+            <p>📍 Adresse : 32 rte de Toulouse, Plaisance du Touch, 31830</p>
+            <p>📧 Email : contact@proburo31.fr</p>
+            <p>🌐 Site Internet : <a href="https://www.pleinciel.fr" target="_blank" rel="noopener noreferrer">https://www.pleinciel.fr</a></p>
+        </section>
+
+        <!-- Section des favoris -->
+        <section id="favorites-section">
+            <h3>Vos Imprimantes Favoris</h3>
+            <ul id="favorites-list"></ul>
+        </section>
+    </main>
+
+    <script>
+        // Fonction de filtrage par marque
+        function filterByBrand(brand) {
+            const rows = document.querySelectorAll('#imprimanteTable tbody tr');
+            rows.forEach(row => {
+                const brandCell = row.cells[0].textContent.toLowerCase();
+                if (brand === 'all' || brandCell.includes(brand)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        }
+
+        // Fonction pour ajouter/enlever des favoris
+        const favorites = [];
+
+        function toggleFavorite(icon, reference) {
+            const index = favorites.indexOf(reference);
+            if (index > -1) {
+                favorites.splice(index, 1); // Retire des favoris
+                icon.classList.remove('active');
+                icon.textContent = '☆'; // Étoile vide
+            } else {
+                favorites.push(reference); // Ajoute aux favoris
+                icon.classList.add('active');
+                icon.textContent = '★'; // Étoile pleine
+            }
+            updateFavoritesDisplay();
+        }
+
+        // Met à jour l'affichage des favoris
+        function updateFavoritesDisplay() {
+            const favoritesSection = document.getElementById('favorites-section');
+            const favoritesList = document.getElementById('favorites-list');
+            favoritesList.innerHTML = '';
+            favorites.forEach(reference => {
+                const listItem = document.createElement('li');
+                listItem.textContent = reference;
+                favoritesList.appendChild(listItem);
+            });
+            favoritesSection.style.display = favorites.length > 0 ? 'block' : 'none';
+        }
+
+        // Fonction pour rechercher dans le tableau
+        document.getElementById('searchBar').addEventListener('input', function () {
+            const searchTerm = this.value.toLowerCase();
+            const rows = document.querySelectorAll('#imprimanteTable tbody tr');
+            rows.forEach(row => {
+                const cells = Array.from(row.cells);
+                const match = cells.some(cell => cell.textContent.toLowerCase().includes(searchTerm));
+                row.style.display = match ? '' : 'none';
+            });
+        });
+    </script>
+</body>
+
+</html>
